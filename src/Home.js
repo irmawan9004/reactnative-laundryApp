@@ -18,16 +18,19 @@ export default class Home extends Component {
           namaJasa: 'Cuci Pakaian',
           description: 'Cuci Pakaian Bersih dan Wangi',
           icon: 'tshirt',
+          route: 'Cuci',
         },
         {
           namaJasa: 'Setrika',
           description: 'Setrika Pakaian Kering dan Wangi',
           icon: 'fan',
+          route: '',
         },
         {
           namaJasa: 'Sepatu',
           description: 'Cuci Sepatu Bersih dan Kinclong',
           icon: 'shoe-prints',
+          route: '',
         },
       ],
     };
@@ -52,7 +55,8 @@ export default class Home extends Component {
                 paddingHorizontal: 10,
                 borderRadius: 5,
                 elevation: 5,
-              }}>
+              }}
+              onPress={() => this.props.navigation.navigate(item.route)}>
               <Icon name={item.icon} size={50} color="#fff" />
               <Text style={{color: 'white', fontWeight: 'bold', marginTop: 20}}>
                 {item.namaJasa}
