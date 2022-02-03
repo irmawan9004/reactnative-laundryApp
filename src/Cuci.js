@@ -4,6 +4,7 @@ import {
   View,
   StatusBar,
   TouchableOpacity,
+  TextInput,
 } from 'react-native';
 import React, {Component} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -35,6 +36,10 @@ export default class Cuci extends Component {
         },
       ],
       total: 0,
+      cart: [],
+      totalModal: false,
+      nama: '',
+      alamat: '',
     };
   }
 
@@ -58,6 +63,16 @@ export default class Cuci extends Component {
       total += daftarJenisPakaian[i].harga * daftarJenisPakaian[i].jumlah;
     }
     this.setState({total});
+  };
+
+  displayCheckout = () => {
+    let daftarJenisPakaian = [...this.state.daftarJenisPakaian];
+    for (let i = 0; i < daftarJenisPakaian.length; i++) {
+      if (daftarJenisPakaian[i].jumlah == 0) {
+        daftarJenisPakaian.splice(i--, 1);
+      }
+    }
+    this.setState({cart: daftarJenisPakaian, totalModal: true});
   };
 
   render() {
@@ -113,7 +128,15 @@ export default class Cuci extends Component {
             </View>
           )}
         />
-        <View style={{backgroundColor: '#5778FF', padding: 5}}>
+
+        <View
+          style={{
+            backgroundColor: '#5778FF',
+            padding: 5,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
           <Text style={{color: 'white', paddingHorizontal: 10}}>
             Total :{' '}
             <Text style={{fontWeight: 'bold'}}>
@@ -123,10 +146,111 @@ export default class Cuci extends Component {
                 .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
             </Text>
           </Text>
+          <TouchableOpacity
+            style={{backgroundColor: 'black', padding: 10, borderRadius: 5}}
+            onPress={() => this.displayCheckout()}>
+            <Text style={{color: 'white'}}>Selesai</Text>
+          </TouchableOpacity>
         </View>
-        <Modal isVisible={true}>
-          <View style={{flex: 1, backgroundColor: 'white'}}>
-            <Text>I am the modal content!</Text>
+
+        <Modal isVisible={this.state.totalModal}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'white',
+              borderRadius: 5,
+            }}>
+            <Text
+              style={{textAlign: 'center', fontWeight: 'bold', fontSize: 20}}>
+              Total
+            </Text>
+            <FlatGrid
+              itemDimension={130}
+              data={this.state.cart}
+              renderItem={({item, index}) => (
+                <View
+                  style={{
+                    backgroundColor: '#5778FF',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    elevation: 4,
+                    paddingTop: 20,
+                    paddingBottom: 10,
+                    borderRadius: 5,
+                  }}>
+                  <Icon name={item.icon} size={50} color="#fff" />
+                  <Text style={styles.textTitle}>{item.nama}</Text>
+                  <Text style={styles.text}>
+                    Rp{' '}
+                    {item.harga
+                      .toString()
+                      .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+                  </Text>
+                  <Text
+                    style={{color: 'white', fontWeight: 'bold', marginTop: 5}}>
+                    {item.jumlah}
+                  </Text>
+                </View>
+              )}
+            />
+            <View style={{marginBottom: 20}}>
+              <TextInput
+                style={{borderBottomWidth: 1, marginHorizontal: 20}}
+                value={this.state.nama}
+                onChange={text => this.setState({nama: text})}
+                placeholder="Masukkan Nama Anda Disini..."
+              />
+              <TextInput
+                style={{
+                  borderBottomWidth: 1,
+                  marginHorizontal: 20,
+                  marginTop: 20,
+                }}
+                value={this.state.alamat}
+                onChange={text => this.setState({alamat: text})}
+                placeholder="Masukkan Nama Anda Disini..."
+              />
+            </View>
+            <Text
+              style={{
+                color: 'black',
+                paddingHorizontal: 10,
+                textAlign: 'center',
+              }}>
+              Total :{' '}
+              <Text style={{fontWeight: 'bold'}}>
+                Rp{' '}
+                {this.state.total
+                  .toString()
+                  .replace(/\B(?=(\d{3})+(?!\d))/g, '.')}
+              </Text>
+            </Text>
+            <View style={{flexDirection: 'row', marginTop: 20}}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: 'crimson',
+                  padding: 10,
+                  borderBottomLeftRadius: 5,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                onPress={() => this.setState({totalModal: false})}>
+                <Text style={{color: 'white'}}>Batal</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: 'black',
+                  padding: 10,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flex: 1,
+                  borderBottomRightRadius: 5,
+                }}
+                onPress={() => this.setState({totalModal: false})}>
+                <Text style={{color: 'white'}}>Selesai</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </Modal>
       </View>
