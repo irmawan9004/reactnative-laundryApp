@@ -10,6 +10,7 @@ import React, {Component} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {FlatGrid} from 'react-native-super-grid';
 import Modal from 'react-native-modal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Cuci extends Component {
   constructor(props) {
@@ -40,8 +41,52 @@ export default class Cuci extends Component {
       totalModal: false,
       nama: '',
       alamat: '',
+      transaksi: [],
     };
   }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = async () => {
+    try {
+      let value = await AsyncStorage.getItem('@transaksi');
+      value = JSON.parse(value);
+
+      if (value !== null) {
+        this.setState({transaksi: value});
+      }
+      console.log('data berhasil diget', value);
+    } catch (error) {
+      console.log('data gagal di get', error.message);
+    }
+  };
+
+  saveData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        '@transaksi',
+        JSON.stringify(this.state.transaksi),
+      );
+      console.log('data berhasil disimpan');
+    } catch (error) {
+      console.log('data gaggal disimpan');
+    }
+  };
+
+  prosesTransaksi = () => {
+    let detailTransaksi = {
+      nama: this.state.nama,
+      alamat: this.state.alamat,
+      cart: this.state.cart,
+    };
+    let transaksi = this.state.transaksi;
+    transaksi.push(detailTransaksi);
+    this.saveData();
+
+    this.setState({nama: '', alamat: '', cart: []});
+  };
 
   editQty = (command, index) => {
     let daftarJenisPakaian = this.state.daftarJenisPakaian;
@@ -197,8 +242,8 @@ export default class Cuci extends Component {
               <TextInput
                 style={{borderBottomWidth: 1, marginHorizontal: 20}}
                 value={this.state.nama}
-                onChange={text => this.setState({nama: text})}
                 placeholder="Masukkan Nama Anda Disini..."
+                onChangeText={text => this.setState({nama: text})}
               />
               <TextInput
                 style={{
@@ -206,9 +251,9 @@ export default class Cuci extends Component {
                   marginHorizontal: 20,
                   marginTop: 20,
                 }}
-                value={this.state.alamat}
-                onChange={text => this.setState({alamat: text})}
+                // value={this.state.alamat}
                 placeholder="Masukkan Nama Anda Disini..."
+                onChangeText={text => this.setState({alamat: text})}
               />
             </View>
             <Text
@@ -247,7 +292,11 @@ export default class Cuci extends Component {
                   flex: 1,
                   borderBottomRightRadius: 5,
                 }}
-                onPress={() => this.setState({totalModal: false})}>
+                onPress={() =>
+                  this.setState({totalModal: false}, () =>
+                    this.prosesTransaksi(),
+                  )
+                }>
                 <Text style={{color: 'white'}}>Selesai</Text>
               </TouchableOpacity>
             </View>
