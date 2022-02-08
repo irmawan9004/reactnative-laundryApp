@@ -32,6 +32,12 @@ export default class Home extends Component {
           icon: 'shoe-prints',
           route: '',
         },
+        {
+          namaJasa: 'Admin',
+          description: 'Admin Laundry',
+          icon: 'user',
+          route: 'Admin',
+        },
       ],
     };
   }
@@ -50,6 +56,7 @@ export default class Home extends Component {
               style={{
                 backgroundColor: '#6886FE',
                 paddingVertical: 20,
+                height: 180,
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingHorizontal: 10,

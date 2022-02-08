@@ -85,7 +85,31 @@ export default class Cuci extends Component {
     transaksi.push(detailTransaksi);
     this.saveData();
 
-    this.setState({nama: '', alamat: '', cart: []});
+    this.setState({
+      nama: '',
+      alamat: '',
+      cart: [],
+      daftarJenisPakaian: [
+        {
+          nama: 'Baju',
+          harga: 2000,
+          jumlah: 0,
+          icon: 'tshirt',
+        },
+        {
+          nama: 'Kaos Kaki',
+          harga: 4000,
+          jumlah: 0,
+          icon: 'socks',
+        },
+        {
+          nama: 'Topi',
+          harga: 4000,
+          jumlah: 0,
+          icon: 'hat-cowboy',
+        },
+      ],
+    });
   };
 
   editQty = (command, index) => {
